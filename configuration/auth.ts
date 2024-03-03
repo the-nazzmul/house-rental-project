@@ -2,9 +2,9 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth, { AuthOptions } from "next-auth";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
 import prisma from "@/libs/prismadb";
 import bcrypt from "bcrypt";
+import Credentials from "next-auth/providers/credentials";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -29,10 +29,10 @@ export const authOptions: AuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-            where:{
-                email: credentials.email
-            }
-        //   email: credentials.email,
+          where: {
+            email: credentials.email,
+          },
+          //   email: credentials.email,
         });
 
         if (!user || !user?.hashedPassword) {
@@ -62,4 +62,3 @@ export const authOptions: AuthOptions = {
 };
 
 export default NextAuth(authOptions);
-
