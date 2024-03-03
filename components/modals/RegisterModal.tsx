@@ -90,7 +90,10 @@ const RegisterModal = () => {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex justify-center items-center gap-2">
           <h4>Already have an account?</h4>
-          <h4 className="text-neutral-800 cursor-pointer hover:underline" onClick={registerModal.onClose}>
+          <h4
+            className="text-neutral-800 cursor-pointer hover:underline hover:text-rose-500"
+            onClick={registerModal.onClose}
+          >
             Log in
           </h4>
         </div>
