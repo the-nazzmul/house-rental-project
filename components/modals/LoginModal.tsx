@@ -2,7 +2,7 @@
 
 import useRegisterModal from "@/hooks/useRegisterModal";
 import useLoginModal from "@/hooks/useLoginModal";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import Modal from "./Modal";
 import Heading from "../Heading";
@@ -36,8 +36,7 @@ const LoginModal = () => {
     signIn("credentials", {
       ...data,
       redirect: false,
-    })
-    .then((callback) => {
+    }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
         toast.success("Logged in");
@@ -49,6 +48,11 @@ const LoginModal = () => {
       }
     });
   };
+
+  const toggle = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -91,12 +95,12 @@ const LoginModal = () => {
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex justify-center items-center gap-2">
-          <h4>Already have an account?</h4>
+          <h4>First time using Airbnb?</h4>
           <h4
             className="text-neutral-800 cursor-pointer hover:underline hover:text-rose-500"
-            onClick={registerModal.onClose}
+            onClick={toggle}
           >
-            Log in
+            Create an account
           </h4>
         </div>
       </div>
