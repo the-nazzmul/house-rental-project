@@ -32,7 +32,6 @@ export const authOptions: AuthOptions = {
           where: {
             email: credentials.email,
           },
-          //   email: credentials.email,
         });
 
         if (!user || !user?.hashedPassword) {
