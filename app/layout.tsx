@@ -32,7 +32,6 @@ export default async function RootLayout({
         <RentModal />
         <Navbar currentUser={currentUser} />
         <main className="pb-20 pt-28">{children}</main>
-        <Footer />
       </body>
     </html>
   );
