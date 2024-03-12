@@ -2,6 +2,11 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import EmptyState from "@/components/EmptyState";
 import PropertiesClient from "./PropertiesClient";
 import getListings from "@/actions/getListings";
+import { Suspense } from "react";
+
+function SuspenseBoundary() {
+  return <>Loading</>;
+}
 
 const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
@@ -21,7 +26,11 @@ const PropertiesPage = async () => {
     );
   }
 
-  return <PropertiesClient listings={listings} currentUser={currentUser} />;
+  return (
+    <Suspense fallback={<SuspenseBoundary />}>
+      <PropertiesClient listings={listings} currentUser={currentUser} />
+    </Suspense>
+  );
 };
 
 export default PropertiesPage;
