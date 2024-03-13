@@ -19,7 +19,6 @@ export default async function getListings(params: IListingParams) {
         createdAt: "desc",
       },
     });
-    console.log({ listings })
     return listings;
   } catch (error: any) {
     throw new Error(error);

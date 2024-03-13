@@ -4,7 +4,7 @@ import useCountries from "@/hooks/useCountries";
 import { Listing, Reservation, User } from "@prisma/client";
 import { format } from "date-fns";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import HeartButton from "../HeartButton";
 import Button from "../Button";
@@ -28,7 +28,10 @@ const ListingCard: React.FC<IListingCardProps> = ({
   actionLabel,
   currentUser,
 }) => {
-  const router = useRouter();
+  const router: any = useRouter();
+  const path = usePathname();
+
+
   const { getValue } = useCountries();
 
   const location = getValue(data.locationValue);
@@ -60,7 +63,8 @@ const ListingCard: React.FC<IListingCardProps> = ({
 
     return `${format(start, "PP")} - ${format(end, "PP")}`;
   }, [reservation]);
-
+  const advanced = (price * 15) / 100
+  const due = price - advanced;
   return (
     <div
       className="col-span-1 cursor-pointer group"
@@ -84,10 +88,15 @@ const ListingCard: React.FC<IListingCardProps> = ({
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
+        {path === '/trips' && <div className="flex justify-between text-sm">
+          <p className=""> Advanced <br /> ${advanced}</p>
+          <p className=""> Due <br /> ${due}</p>
+        </div>}
         <div className="flex items-center gap-1">
           <p className="font-semibold">$ {price}</p>
           {!reservation && <div className="font-light">/ night</div>}
         </div>
+
         {onAction && actionLabel && (
           <Button
             disabled={disabled}
