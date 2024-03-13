@@ -31,12 +31,9 @@
     "react-icons": "^5.0.1",
     "react-leaflet": "^4.2.1",
     "react-select": "^5.8.0",
-<<<<<<< HEAD
     "stripe": "^14.20.0",
-=======
     "react-spinners": "^0.13.8",
     "sharp": "^0.33.2",
->>>>>>> 2739c71dda4a2c85771722af5d707a116c964e04
     "world-countries": "^5.0.0",
     "zustand": "^4.5.1"
   },
