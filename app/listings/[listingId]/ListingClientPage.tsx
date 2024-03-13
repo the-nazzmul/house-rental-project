@@ -13,6 +13,10 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import ListingReservation from "@/components/listings/ListingReservation";
 import { Range } from "react-date-range";
+import { Elements } from '@stripe/react-stripe-js';
+import { StripeElementsOptions, loadStripe } from "@stripe/stripe-js";
+import CheckoutForm from "./CheckoutForm";
+import { is } from "date-fns/locale";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -31,6 +35,7 @@ const ListingClientPage: React.FC<IListingClientPageProps> = ({
   listing,
   currentUser,
 }) => {
+  const [clientSecret, setClientSecret] = useState<string>()
   const loginModal = useLoginModal();
   const router = useRouter();
 
@@ -51,7 +56,12 @@ const ListingClientPage: React.FC<IListingClientPageProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
   const [dateRange, setDateRange] = useState<Range>(initialDateRange);
-
+  const data = {
+    totalPrice,
+    startDate: dateRange.startDate,
+    endDate: dateRange.endDate,
+    listingId: listing?.id,
+  }
   // Function for creating reservations
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -60,17 +70,9 @@ const ListingClientPage: React.FC<IListingClientPageProps> = ({
     setIsLoading(true);
 
     axios
-      .post("/api/reservations", {
-        totalPrice,
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-        listingId: listing?.id,
-      })
-      .then(() => {
-        toast.success("Listing reserved");
-        setDateRange(initialDateRange);
-        router.push("/trips");
-        router.refresh();
+      .post("/api/create-payment", data)
+      .then((res) => {
+        setClientSecret(res.data.clientSecret)
       })
       .catch(() => toast.error("Something went wrong"))
       .finally(() => {
@@ -98,6 +100,20 @@ const ListingClientPage: React.FC<IListingClientPageProps> = ({
     return categories.find((item) => item.label === listing.category);
   }, [listing.category]);
 
+
+  const options: StripeElementsOptions = {
+    clientSecret: String(clientSecret),
+    appearance: {
+      theme: 'stripe'
+    }
+  }
+  const stripePromise = loadStripe("pk_test_51MoRzYA8qrQp1zwvisz9mSIs8NITcwnX96PWjqIfc7PAN89bKfvC8ww3nopY2oKrgmbSoJSN5K5OkKWweFBLwXeZ00n7w8APUQ")
+
+  useEffect(() => {
+    if (clientSecret) {
+      setIsLoading(true)
+    }
+  }, [clientSecret])
   return (
     <Container>
       <div className="max-w-screen-lg mx-auto">
@@ -129,9 +145,16 @@ const ListingClientPage: React.FC<IListingClientPageProps> = ({
                 disabled={isLoading}
                 disabledDates={disabledDates}
               />
+
+              {clientSecret && stripePromise &&
+                <Elements options={options} stripe={stripePromise}>
+                  <CheckoutForm data={data} />
+                </Elements>
+              }
             </div>
           </div>
         </div>
+
       </div>
     </Container>
   );
