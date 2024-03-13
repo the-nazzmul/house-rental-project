@@ -63,7 +63,7 @@ const RentModal = () => {
   // This is to implement leaflet as it has issues with SSR
   const Map = useMemo(
     () => dynamic(() => import("../Map"), { ssr: false }),
-    [location]
+    []
   );
 
   const setCustomValue = (id: string, value: any) => {
